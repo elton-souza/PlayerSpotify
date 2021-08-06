@@ -1,13 +1,13 @@
 window.onSpotifyWebPlaybackSDKReady = () => {
-    const token = 'BQA0JKQ4OccoSqfAKRhKX0EFaceN3kMYcv-gEiw_0bUCpEH-xmYojl9dCg9nYwAdLz8jQpM7ntxB6RmTV7SeifoJM-4gWKDoOWGmxSEcO2qOYoEjQ_Ge7NTZhp4woODqcw7_sizGLdPk3BvN9ulbgtDosn9px-A84KKfULmhnWpuoHNi9lwbNZQ';
+    const token = 'BQDd8oDHwEYApz3jmHFO4H_EP9UqtaPltIHiPxgTX_23Ptqit6wddw6tIVxn41HsJ1EBDXBHLM6SFWZWWB9OAjc04lT0Pq7UnRytirYTIoGElQJOI9MI4lQg78PIKYUYW-J9coeBxEfZDpf-mIVDoOlX2_Ra5_IhFnpBg2utjoFY-_CXw6IHgNk';
     const player = new Spotify.Player({
-        name: 'Meu programa',
+        name: 'App',
         getOAuthToken: cb => {
             cb(token);
         }
     });
 
-    // Error handling
+    // Erros Gerados
     player.addListener('initialization_error', ({
         message
     }) => {
@@ -28,37 +28,36 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     }) => {
         console.error(message);
     });
-
-    // Playback status updates
-    player.addListener('player_state_changed', state => {
-        console.log(state)
-        let art = ""
-        const music = state.track_window.current_track.name
-        const artista = state.track_window.current_track.artists
-        artista.forEach(artista => {
-            art = artista.name
-        })
-        const p = document.querySelector('p')
-        p.innerHTML = `${music} - ${art}`
-    });
-
-    // Ready
+    // Player pronto para uso
     player.addListener('ready', ({
         device_id
     }) => {
         console.log('Ready with Device ID', device_id);
     });
 
-    // Not Ready
+    // Player não pronto para uso
     player.addListener('not_ready', ({
         device_id
     }) => {
         console.log('Device ID has gone offline', device_id);
     });
-    // Connect to the player!
+    // Conectar player!
     player.connect();
 
+    // Alterações no player e renderizar musicas do player
+    player.addListener('player_state_changed', state => {
+        console.log(state)
+        let art = ""
+        const music = state.track_window.current_track.name
+        const artista = state.track_window.current_track.artists
+        const album = state.track_window.current_track.album.images[0].url
+        artista.forEach(artista => {
+            art += ` ${artista.name}`
+        })
+        render(album, art, music)
+    });
 
+    // Ações de avançar ou retrocer a musica
     const buttonPlayer = document.querySelector('[data-buttonPlayer]')
     buttonPlayer.addEventListener('click', (btn)=>{
         const botao = btn.target
@@ -73,6 +72,8 @@ window.onSpotifyWebPlaybackSDKReady = () => {
             player.pause()
         }
     })
+
+    // Pausar ou continuar a música
     const next = document.querySelector('[data-buttonNext]')
     next.addEventListener('click', ()=>{
         player.nextTrack()
@@ -83,3 +84,19 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     })
 
 };
+
+function render(album, art, music){
+    const content1 = `<img src="${album}">
+                <span>${music} - ${art}<span>`
+                
+    const content2 = `<button data-buttonPrevius> < </button>
+    <button data-buttonPlayer="play"> Play </button>
+    <button data-buttonNext> > </button>`
+
+
+    const divPlayer = document.querySelector('[data-player="sobre"]')
+    divPlayer.innerHTML = content1
+    
+    const divFuncoesPlayer = document.querySelector('[data-player="funcoes"]')
+    divFuncoesPlayer.innerHTML = content2
+}
