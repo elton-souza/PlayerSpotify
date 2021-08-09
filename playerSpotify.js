@@ -1,12 +1,14 @@
 (()=>{
     window.onSpotifyWebPlaybackSDKReady = () => {
-        const token = 'BQCZk3V5fz9suNfc9FO9STMxHWPwbadx71fXePk4NtAKIkiSzcTprya0-hDjIBF8TA7Q53DEnBww9Xa0y3dYAnNP1r7j0uyWHYYN--IeWUMmsL4Xz06oR08IHmH61aX5CO8huQMBKgacZWN5EkQceIylt_hcLsA7ulwT5iuNUJlRl4OaGifM1DM';
+        const token = 'BQDxUnqHiOodIW60YnTe9lyfODc4l1PO0X5U38b4hsgRW4n2qyxufsuDuNLLkvVDpBzX_iz-QhDDU4mbx-RtI6-RzXbLeRkRzQPQZi-M2zVde1qtUeUt6ADXp-9Y0U-E4KHBpCx2SmKT_nGgNjbmGT2I50I900CffDr_0Ki_ggkaR5z_ClyS6uQ';
         const player = new Spotify.Player({
             name: 'App',
             getOAuthToken: cb => {
                 cb(token);
             }
         });
+        player.addListener('authentication_error', ({ message }) => { console.error(message); });
+        player.addListener('ready', ({ device_id }) => {console.log('Ready with Device ID', device_id);});
         // Conectar player!
         player.connect()
         // Alterações no player e renderizar musicas do player
