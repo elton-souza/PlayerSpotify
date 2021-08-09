@@ -7,23 +7,24 @@
                 cb(token);
             }
         });
-        console.log(player)
-        player.addListener('authentication_error', ({ message }) => { console.error(message); });
-        player.addListener('ready', ({ device_id }) => {console.log('Ready with Device ID', device_id);});
+        player.addListener('authentication_error', ({ message }) => { console.error(message); }); //Mensagem caso ocorra erro na autenticação
+        player.addListener('ready', ({ device_id }) => {console.log('Ready with Device ID', device_id);})
+
         // Conectar player!
         player.connect()
-        // Alterações no player e renderizar musicas do player
+
+        // Alterações no player
         player.addListener('player_state_changed', state => {
-            let art = ""
+            let artistsName = ""
             const music = state.track_window.current_track.name
-            const artista = state.track_window.current_track.artists
+            const artists = state.track_window.current_track.artists
             const album = state.track_window.current_track.album.images[0].url
-            artista.forEach(artista => {
-                art += ` ${artista.name}`
-            })
-            render(album, art, music)
-            funcoesPlayer()
             const buttonPlayer = document.querySelector('[data-buttonPlayer]')
+            
+            artists.forEach(artists => {
+                artistsName += ` ${artists.name}`
+            })
+            
             if(state.paused){
                 document.querySelector('[data-buttonPlayer]').classList.add('button-play')
                 buttonPlayer.dataset.buttonplayer = "play"
@@ -31,48 +32,63 @@
                 document.querySelector('[data-buttonPlayer]').classList.add('button-pause')
                 buttonPlayer.dataset.buttonplayer = "pause"
             } 
-            
+
+            render(album, artistsName, music)
+            funcoesPlayer()
+
         });
 
         function funcoesPlayer(){
-            // Ações de avançar ou retrocer a musica
             const buttonPlayer = document.querySelector('[data-buttonPlayer]')
+        // Pausar ou continuar musica
             buttonPlayer.addEventListener('click', (btn)=>{
-            const botao = btn.target
-            console.log(botao)
-            if(botao.dataset.buttonplayer == "pause"){
-                player.pause()
-            }
-            else if(botao.dataset.buttonplayer == "play"){
-                player.resume()
-            }
+                const button = btn.target
+                if(button.dataset.buttonplayer == "pause"){
+                    player.pause()
+                }
+                else if(button.dataset.buttonplayer == "play"){
+                    player.resume()
+                }
             })
 
-        // Pausar ou continuar a música
+        // Proxima música
             const next = document.querySelector('[data-buttonNext]')
             next.addEventListener('click', ()=>{
-            player.nextTrack()
+                player.nextTrack()
             })
+        // Musica anterir
             const previus = document.querySelector('[data-buttonPrevius]')
             previus.addEventListener('click', ()=>{
-            player.previousTrack()
+                player.previousTrack()
+            })
+
+        //Volume player
+            const range = document.querySelector('[data-volume]')
+            range.addEventListener('input', (input)=>{
+                const volume = data.target.value
+                player.setVolume(volume)
             })
         }
     };
     
+    //Renderizar os objetos
     function render(album, art, music){
-        const content1 = `<img class="music-album" src="${album}">
+        document.querySelector('[data-container]').classList.add('bloco-player')
+
+        const info = `<img class="music-album" src="${album}">
                     <span class="music-name">${music} - ${art}<span>`
                     
-        const content2 = `<button class="button button-previus" data-buttonPrevius></button>
+        const functions = `<button class="button button-previus" data-buttonPrevius></button>
         <button class="button" data-buttonPlayer></button>
-        <button class="button button-next" data-buttonNext></button>`
-    
+        <button class="button button-next" data-buttonNext></button>
+        <input class="volume" type="range" min="0" max="100" data-volume >
+        `
+        
     
         const divPlayer = document.querySelector('[data-player="music"]')
-        divPlayer.innerHTML = content1
+        divPlayer.innerHTML = info
         
         const divFuncoesPlayer = document.querySelector('[data-player="funcoes"]')
-        divFuncoesPlayer.innerHTML = content2
+        divFuncoesPlayer.innerHTML = functions
     }
 })()
