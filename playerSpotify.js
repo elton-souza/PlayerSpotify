@@ -1,12 +1,13 @@
 (()=>{
     window.onSpotifyWebPlaybackSDKReady = () => {
-        const token = 'BQDxUnqHiOodIW60YnTe9lyfODc4l1PO0X5U38b4hsgRW4n2qyxufsuDuNLLkvVDpBzX_iz-QhDDU4mbx-RtI6-RzXbLeRkRzQPQZi-M2zVde1qtUeUt6ADXp-9Y0U-E4KHBpCx2SmKT_nGgNjbmGT2I50I900CffDr_0Ki_ggkaR5z_ClyS6uQ';
+        const token = 'BQDKOXfzCbbc0kNF4R2_UXZ3QrCQKWwzGaCEj14wx5xnw_mMNl8DODS2woH8DUNLN2FhYCvMutsQJ2eAQjt39jD_I-hf8KZ3CiM49wRQ6jxYm76dZYPh4D71XzhhUlnGPz5MA8kQcIcJRhOPv-jw7U7PbnMrlsxgDwNiOL3D--le6FcuYe-EMoo';
         const player = new Spotify.Player({
             name: 'App',
             getOAuthToken: cb => {
                 cb(token);
             }
         });
+        console.log(player)
         player.addListener('authentication_error', ({ message }) => { console.error(message); });
         player.addListener('ready', ({ device_id }) => {console.log('Ready with Device ID', device_id);});
         // Conectar player!
@@ -22,11 +23,13 @@
             })
             render(album, art, music)
             funcoesPlayer()
-
+            const buttonPlayer = document.querySelector('[data-buttonPlayer]')
             if(state.paused){
                 document.querySelector('[data-buttonPlayer]').classList.add('button-play')
+                buttonPlayer.dataset.buttonplayer = "play"
             }else{
                 document.querySelector('[data-buttonPlayer]').classList.add('button-pause')
+                buttonPlayer.dataset.buttonplayer = "pause"
             } 
             
         });
@@ -34,16 +37,13 @@
         function funcoesPlayer(){
             // Ações de avançar ou retrocer a musica
             const buttonPlayer = document.querySelector('[data-buttonPlayer]')
-            console.log(buttonPlayer)
             buttonPlayer.addEventListener('click', (btn)=>{
             const botao = btn.target
             console.log(botao)
             if(botao.dataset.buttonplayer == "pause"){
-                botao.dataset.buttonplayer = "play"
                 player.pause()
             }
             else if(botao.dataset.buttonplayer == "play"){
-                botao.dataset.buttonplayer = "pause"
                 player.resume()
             }
             })
@@ -65,7 +65,7 @@
                     <span class="music-name">${music} - ${art}<span>`
                     
         const content2 = `<button class="button button-previus" data-buttonPrevius></button>
-        <button class="button" data-buttonPlayer="pause"></button>
+        <button class="button" data-buttonPlayer></button>
         <button class="button button-next" data-buttonNext></button>`
     
     
