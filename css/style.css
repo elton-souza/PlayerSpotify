@@ -37,6 +37,7 @@ main{
 .funcoesPlayer{
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
     padding: 30px;
 }
 .button{
@@ -49,25 +50,38 @@ main{
     cursor: pointer;
 }
 .button-play{
-    background-image: url('./img/play.png');
+    background-image: url('../img/play.png');
     background-repeat: no-repeat;
     background-position: center;
 }
 .button-pause{
-    background-image: url('./img/pause.png');
+    background-image: url('../img/pause.png');
     background-repeat: no-repeat;
     background-position: center;
 
 }
 .button-next{
-    background-image: url('./img/next.png');
+    background-image: url('../img/next.png');
     background-position: center;
     background-repeat: no-repeat;
     background-color: green;
 }
 .button-previus{
-    background-image: url('./img/previus.png');
+    background-image: url('../img/previus.png');
     background-repeat: no-repeat;
     background-position: center;
     background-color: green;
+}
+.functionVolume{
+    width: 300px;
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    cursor: pointer;
+}
+.volume{
+    width: 150px;
+}
+.speaker{
+    width: 30px;
 }
